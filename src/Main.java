@@ -58,7 +58,7 @@ public class Main {
 
         frame.setVisible(true);
 
-        // Ação do botão
+        // Ação do botão Encrypt
         encryptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,11 +93,12 @@ public class Main {
             }
         });
 
+        //Ação do botão Decrypt
         decryptButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frame = new JFrame("Encrypt Login");
+                JFrame frame = new JFrame("Decrypted");
                 frame.setSize(500, 800);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new GridLayout(4, 1, 10, 10));
@@ -111,7 +112,7 @@ public class Main {
 
     public static String decryptInformations() {
 
-        String resultado = "Senhas criptografadas. Verifique sua chave(key.txt) e tente novamente.";
+        String resultado = "Não foi possível descriptografar as senhas. Verifique sua chave(key.txt) e tente novamente!";
         fileEncrypter = new File("Encrypted.txt");
         HashMap<String, String> contas = new HashMap<>();
 
@@ -127,15 +128,13 @@ public class Main {
                     Decrypter dc = new Decrypter(key);
 
                     contas.put(dc.getDecrypted(email), dc.getDecrypted(senha));
-                    System.out.println(dc.getDecrypted(email));
-                    System.out.println(dc.getDecrypted(senha));
 
-                    resultado = contas.entrySet()
+                    resultado =  contas.entrySet()
                             .stream()
                             .map(entry -> entry.getKey() + ": " + entry.getValue())
                             .collect(java.util.stream.Collectors.joining("\n"));
-                }
 
+                }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
