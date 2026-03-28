@@ -102,7 +102,8 @@ public class Main {
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new GridLayout(4, 1, 10, 10));
                 frame.setVisible(true);
-                Label label = new Label(decryptInformations());
+                JLabel label = new JLabel();
+                label.setText("<html>" + decryptInformations().replace("\n", "<br>") + "</html>");
                 frame.add(label);
             }
         });
@@ -110,6 +111,7 @@ public class Main {
 
     public static String decryptInformations() {
 
+        String resultado = "Senhas criptografadas. Verifique sua chave(key.txt) e tente novamente.";
         fileEncrypter = new File("Encrypted.txt");
         HashMap<String, String> contas = new HashMap<>();
 
@@ -127,16 +129,17 @@ public class Main {
                     contas.put(dc.getDecrypted(email), dc.getDecrypted(senha));
                     System.out.println(dc.getDecrypted(email));
                     System.out.println(dc.getDecrypted(senha));
+
+                    resultado = contas.entrySet()
+                            .stream()
+                            .map(entry -> entry.getKey() + ": " + entry.getValue())
+                            .collect(java.util.stream.Collectors.joining("\n"));
                 }
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
-        String resultado = contas.entrySet()
-                .stream()
-                .map(entry -> entry.getKey() + ": " + entry.getValue())
-                .collect(java.util.stream.Collectors.joining("\n"));
 
         return resultado;
     }
