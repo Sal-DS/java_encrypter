@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.List;
 
 public class Main {
 
@@ -31,7 +32,7 @@ public class Main {
         CriarAquivos(keyGen);
 
         JFrame frame = new JFrame("Encrypt Login");
-        frame.setSize(300, 200);
+        frame.setSize(500, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(4, 1, 10, 10));
 
@@ -43,13 +44,17 @@ public class Main {
         JPasswordField passwordField = new JPasswordField();
         passwordField.setBorder(BorderFactory.createTitledBorder("Senha"));
 
-        // Botão
+        // Encrypt Botão
         JButton encryptButton = new JButton("Encrypt");
+
+        //Decrypt Botão
+        JButton decryptButton = new JButton("Decrypt");
 
         // Adicionando ao frame
         frame.add(emailField);
         frame.add(passwordField);
         frame.add(encryptButton);
+        frame.add(decryptButton);
 
         frame.setVisible(true);
 
@@ -87,11 +92,26 @@ public class Main {
                 }
             }
         });
+
+        decryptButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Encrypt Login");
+                frame.setSize(500, 800);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setLayout(new GridLayout(4, 1, 10, 10));
+                frame.setVisible(true);
+                Label label = new Label(decryptInformations());
+                frame.add(label);
+            }
+        });
     }
 
-    public static void decryptInformations() {
+    public static String decryptInformations() {
 
         fileEncrypter = new File("Encrypted.txt");
+        HashMap<String, String> contas = new HashMap<>();
 
         if (fileEncrypter.exists()) {
             try (Scanner filescan = new Scanner(fileEncrypter)) {
@@ -104,7 +124,7 @@ public class Main {
 
                     Decrypter dc = new Decrypter(key);
 
-                    // Mostrar descriptografado
+                    contas.put(dc.getDecrypted(email), dc.getDecrypted(senha));
                     System.out.println(dc.getDecrypted(email));
                     System.out.println(dc.getDecrypted(senha));
                 }
@@ -113,6 +133,12 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         }
+        String resultado = contas.entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(java.util.stream.Collectors.joining("\n"));
+
+        return resultado;
     }
 
     public static void CriarAquivos(KeyGenerator keyGen) throws IOException {
